@@ -24,14 +24,25 @@ function App() {
       <AuthProvider>
         <BoardProvider>
           <Router>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/dashboard/user" element={<UserDashboardPage />} />
-              <Route path="/dashboard/admin" element={<AdminDashboardPage />} />
-              <Route path="/board/:id" element={<BoardPage />} />
-            </Routes>
+            <div className="app-container">
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                
+                {/* User Routes */}
+                <Route path="/dashboard" element={<UserDashboardPage />} />
+                <Route path="/dashboard/user" element={<UserDashboardPage />} />
+                <Route path="/board/:id" element={<BoardPage />} />
+                
+                {/* Admin Routes */}
+                <Route path="/dashboard/admin" element={<AdminDashboardPage />} />
+                
+                {/* Fallback */}
+                <Route path="*" element={<LandingPage />} />
+              </Routes>
+            </div>
           </Router>
         </BoardProvider>
       </AuthProvider>
