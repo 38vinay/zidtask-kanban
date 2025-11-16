@@ -1,118 +1,302 @@
-// src/pages/UserDashboardPage.jsx - Updated with Component Integration
+// src/pages/UserDashboardPage.jsx - Updated with Sidebar Component
 import React, { useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
-import {
-  Home,
-  LayoutGrid,
-  Users,
-  Mail,
-  BarChart3,
-  Settings,
-  LogOut,
-} from "lucide-react";
 
-// Import Dashboard Components
+// Import Components
+import DashboardSidebar from "../components/dashboard/user/DashboardSidebar";
 import UserDashboard from "../components/dashboard/user/UserDashboard";
 import BoardList from "../components/board/BoardList";
 import Board from "../components/board/Board";
 
 const UserDashboardPage = () => {
   const { darkMode } = useTheme();
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
 
   // Navigation state
   const [activeMenu, setActiveMenu] = useState("Home");
   const [selectedBoardId, setSelectedBoardId] = useState(null);
 
-  // Menu items configuration
-  const menuItems = [
-    { icon: <Home size={20} />, label: "Home", path: "Home" },
-    { icon: <LayoutGrid size={20} />, label: "Tasks", path: "Tasks" },
-    { icon: <Users size={20} />, label: "Team", path: "Team" },
-    { icon: <Mail size={20} />, label: "Messages", path: "Messages" },
-    { icon: <BarChart3 size={20} />, label: "Analytics", path: "Analytics" },
-    { icon: <Settings size={20} />, label: "Settings", path: "Settings" },
-  ];
+  // Handle menu navigation
+  const handleMenuChange = (menuPath) => {
+    setActiveMenu(menuPath);
+    setSelectedBoardId(null); // Reset board selection when changing menus
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    if (confirm('Are you sure you want to logout?')) {
+      logout();
+    }
+  };
 
   // Page content renderer
   const renderPage = () => {
-    // Home Dashboard
-    if (activeMenu === "Home") {
-      return <UserDashboard />;
-    }
+    switch (activeMenu) {
+      case "Home":
+        return <UserDashboard />;
 
-    // Tasks/Boards Page
-    if (activeMenu === "Tasks") {
-      if (selectedBoardId) {
+      case "Tasks":
+        if (selectedBoardId) {
+          return (
+            <Board
+              boardId={selectedBoardId}
+              onBack={() => setSelectedBoardId(null)}
+            />
+          );
+        }
         return (
-          <Board
-            boardId={selectedBoardId}
-            onBack={() => setSelectedBoardId(null)}
-          />
+          <div style={{ padding: "32px" }}>
+            <BoardList onSelectBoard={(id) => setSelectedBoardId(id)} />
+          </div>
         );
-      }
-      return (
-        <div style={{ padding: "30px" }}>
-          <BoardList onSelectBoard={(id) => setSelectedBoardId(id)} />
-        </div>
-      );
-    }
 
-    // Team Page
-    if (activeMenu === "Team") {
-      return (
-        <div style={{ padding: "30px", color: darkMode ? "#fff" : "#000" }}>
-          <h1 style={{ fontSize: "28px", fontWeight: "700", marginBottom: "16px" }}>
-            Team Members
-          </h1>
-          <p style={{ color: darkMode ? "#94a3b8" : "#64748b" }}>
-            Team management functionality will be available here.
-          </p>
-        </div>
-      );
-    }
+      case "Team":
+        return (
+          <div style={{ 
+            padding: "32px", 
+            minHeight: "100vh",
+            background: darkMode ? "#0a0f1e" : "#f8fafc" 
+          }}>
+            <div style={{
+              maxWidth: "1200px",
+              margin: "0 auto"
+            }}>
+              <h1 style={{ 
+                fontSize: "32px", 
+                fontWeight: "700", 
+                marginBottom: "8px",
+                color: darkMode ? "#fff" : "#1e293b"
+              }}>
+                Team Members
+              </h1>
+              <p style={{ 
+                color: darkMode ? "#94a3b8" : "#64748b",
+                marginBottom: "32px",
+                fontSize: "14px"
+              }}>
+                Collaborate with your team members and manage permissions
+              </p>
+              
+              <div style={{
+                background: darkMode 
+                  ? 'rgba(30, 64, 175, 0.1)' 
+                  : '#fff',
+                border: `1px solid ${darkMode 
+                  ? 'rgba(59, 130, 246, 0.2)' 
+                  : 'rgba(30, 64, 175, 0.1)'}`,
+                borderRadius: '16px',
+                padding: '60px 40px',
+                textAlign: 'center'
+              }}>
+                <div style={{
+                  fontSize: '48px',
+                  marginBottom: '16px'
+                }}>👥</div>
+                <h3 style={{
+                  fontSize: '20px',
+                  fontWeight: '600',
+                  color: darkMode ? '#fff' : '#1e293b',
+                  marginBottom: '8px'
+                }}>
+                  Team Management
+                </h3>
+                <p style={{
+                  color: darkMode ? '#94a3b8' : '#64748b',
+                  fontSize: '14px'
+                }}>
+                  Team management features will be available here
+                </p>
+              </div>
+            </div>
+          </div>
+        );
 
-    // Messages Page
-    if (activeMenu === "Messages") {
-      return (
-        <div style={{ padding: "30px", color: darkMode ? "#fff" : "#000" }}>
-          <h1 style={{ fontSize: "28px", fontWeight: "700", marginBottom: "16px" }}>
-            Messages
-          </h1>
-          <p style={{ color: darkMode ? "#94a3b8" : "#64748b" }}>
-            Messaging system coming soon.
-          </p>
-        </div>
-      );
-    }
+      case "Messages":
+        return (
+          <div style={{ 
+            padding: "32px",
+            minHeight: "100vh",
+            background: darkMode ? "#0a0f1e" : "#f8fafc"
+          }}>
+            <div style={{
+              maxWidth: "1200px",
+              margin: "0 auto"
+            }}>
+              <h1 style={{ 
+                fontSize: "32px", 
+                fontWeight: "700", 
+                marginBottom: "8px",
+                color: darkMode ? "#fff" : "#1e293b"
+              }}>
+                Messages
+              </h1>
+              <p style={{ 
+                color: darkMode ? "#94a3b8" : "#64748b",
+                marginBottom: "32px",
+                fontSize: "14px"
+              }}>
+                Stay connected with your team through direct messages
+              </p>
+              
+              <div style={{
+                background: darkMode 
+                  ? 'rgba(30, 64, 175, 0.1)' 
+                  : '#fff',
+                border: `1px solid ${darkMode 
+                  ? 'rgba(59, 130, 246, 0.2)' 
+                  : 'rgba(30, 64, 175, 0.1)'}`,
+                borderRadius: '16px',
+                padding: '60px 40px',
+                textAlign: 'center'
+              }}>
+                <div style={{
+                  fontSize: '48px',
+                  marginBottom: '16px'
+                }}>💬</div>
+                <h3 style={{
+                  fontSize: '20px',
+                  fontWeight: '600',
+                  color: darkMode ? '#fff' : '#1e293b',
+                  marginBottom: '8px'
+                }}>
+                  Messaging System
+                </h3>
+                <p style={{
+                  color: darkMode ? '#94a3b8' : '#64748b',
+                  fontSize: '14px'
+                }}>
+                  Real-time messaging coming soon
+                </p>
+              </div>
+            </div>
+          </div>
+        );
 
-    // Analytics Page
-    if (activeMenu === "Analytics") {
-      return (
-        <div style={{ padding: "30px", color: darkMode ? "#fff" : "#000" }}>
-          <h1 style={{ fontSize: "28px", fontWeight: "700", marginBottom: "16px" }}>
-            Analytics
-          </h1>
-          <p style={{ color: darkMode ? "#94a3b8" : "#64748b" }}>
-            Analytics dashboard coming soon.
-          </p>
-        </div>
-      );
-    }
+      case "Analytics":
+        return (
+          <div style={{ 
+            padding: "32px",
+            minHeight: "100vh",
+            background: darkMode ? "#0a0f1e" : "#f8fafc"
+          }}>
+            <div style={{
+              maxWidth: "1200px",
+              margin: "0 auto"
+            }}>
+              <h1 style={{ 
+                fontSize: "32px", 
+                fontWeight: "700", 
+                marginBottom: "8px",
+                color: darkMode ? "#fff" : "#1e293b"
+              }}>
+                Analytics
+              </h1>
+              <p style={{ 
+                color: darkMode ? "#94a3b8" : "#64748b",
+                marginBottom: "32px",
+                fontSize: "14px"
+              }}>
+                Track your productivity and team performance
+              </p>
+              
+              <div style={{
+                background: darkMode 
+                  ? 'rgba(30, 64, 175, 0.1)' 
+                  : '#fff',
+                border: `1px solid ${darkMode 
+                  ? 'rgba(59, 130, 246, 0.2)' 
+                  : 'rgba(30, 64, 175, 0.1)'}`,
+                borderRadius: '16px',
+                padding: '60px 40px',
+                textAlign: 'center'
+              }}>
+                <div style={{
+                  fontSize: '48px',
+                  marginBottom: '16px'
+                }}>📊</div>
+                <h3 style={{
+                  fontSize: '20px',
+                  fontWeight: '600',
+                  color: darkMode ? '#fff' : '#1e293b',
+                  marginBottom: '8px'
+                }}>
+                  Analytics Dashboard
+                </h3>
+                <p style={{
+                  color: darkMode ? '#94a3b8' : '#64748b',
+                  fontSize: '14px'
+                }}>
+                  Advanced analytics and reporting features coming soon
+                </p>
+              </div>
+            </div>
+          </div>
+        );
 
-    // Settings Page
-    if (activeMenu === "Settings") {
-      return (
-        <div style={{ padding: "30px", color: darkMode ? "#fff" : "#000" }}>
-          <h1 style={{ fontSize: "28px", fontWeight: "700", marginBottom: "16px" }}>
-            Settings
-          </h1>
-          <p style={{ color: darkMode ? "#94a3b8" : "#64748b" }}>
-            User settings will be available here.
-          </p>
-        </div>
-      );
+      case "Settings":
+        return (
+          <div style={{ 
+            padding: "32px",
+            minHeight: "100vh",
+            background: darkMode ? "#0a0f1e" : "#f8fafc"
+          }}>
+            <div style={{
+              maxWidth: "1200px",
+              margin: "0 auto"
+            }}>
+              <h1 style={{ 
+                fontSize: "32px", 
+                fontWeight: "700", 
+                marginBottom: "8px",
+                color: darkMode ? "#fff" : "#1e293b"
+              }}>
+                Settings
+              </h1>
+              <p style={{ 
+                color: darkMode ? "#94a3b8" : "#64748b",
+                marginBottom: "32px",
+                fontSize: "14px"
+              }}>
+                Manage your account preferences and application settings
+              </p>
+              
+              <div style={{
+                background: darkMode 
+                  ? 'rgba(30, 64, 175, 0.1)' 
+                  : '#fff',
+                border: `1px solid ${darkMode 
+                  ? 'rgba(59, 130, 246, 0.2)' 
+                  : 'rgba(30, 64, 175, 0.1)'}`,
+                borderRadius: '16px',
+                padding: '60px 40px',
+                textAlign: 'center'
+              }}>
+                <div style={{
+                  fontSize: '48px',
+                  marginBottom: '16px'
+                }}>⚙️</div>
+                <h3 style={{
+                  fontSize: '20px',
+                  fontWeight: '600',
+                  color: darkMode ? '#fff' : '#1e293b',
+                  marginBottom: '8px'
+                }}>
+                  User Settings
+                </h3>
+                <p style={{
+                  color: darkMode ? '#94a3b8' : '#64748b',
+                  fontSize: '14px'
+                }}>
+                  Account settings and preferences will be available here
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return <UserDashboard />;
     }
   };
 
@@ -125,205 +309,12 @@ const UserDashboardPage = () => {
         overflow: "hidden",
       }}
     >
-      {/* Sidebar */}
-      <div
-        style={{
-          width: "260px",
-          background: darkMode
-            ? "rgba(30, 64, 175, 0.05)"
-            : "rgba(255, 255, 255, 0.8)",
-          backdropFilter: "blur(10px)",
-          borderRight: `1px solid ${
-            darkMode ? "rgba(59, 130, 246, 0.2)" : "rgba(30, 64, 175, 0.1)"
-          }`,
-          display: "flex",
-          flexDirection: "column",
-          padding: "24px 16px",
-          flexShrink: 0,
-        }}
-      >
-        {/* Logo */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            marginBottom: "40px",
-            padding: "0 8px",
-          }}
-        >
-          <div
-            style={{
-              width: "40px",
-              height: "40px",
-              background: "linear-gradient(135deg, #e74c8c 0%, #a855f7 100%)",
-              borderRadius: "10px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "20px",
-              fontWeight: "bold",
-              color: "#fff",
-              boxShadow: "0 4px 12px rgba(231, 76, 140, 0.3)",
-            }}
-          >
-            Z
-          </div>
-          <div>
-            <h2
-              style={{
-                fontSize: "20px",
-                fontWeight: "700",
-                margin: 0,
-                background: "linear-gradient(135deg, #e74c8c 0%, #a855f7 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              ZidTask
-            </h2>
-          </div>
-        </div>
-
-        {/* User Info */}
-        <div
-          style={{
-            padding: "12px",
-            background: darkMode
-              ? "rgba(59, 130, 246, 0.1)"
-              : "rgba(219, 234, 254, 0.3)",
-            borderRadius: "12px",
-            marginBottom: "24px",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <div
-              style={{
-                width: "36px",
-                height: "36px",
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "14px",
-                fontWeight: "600",
-                color: "#fff",
-              }}
-            >
-              {user?.name?.charAt(0) || "U"}
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div
-                style={{
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  color: darkMode ? "#fff" : "#1e293b",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {user?.name || "User"}
-              </div>
-              <div
-                style={{
-                  fontSize: "12px",
-                  color: darkMode ? "#64748b" : "#94a3b8",
-                  textTransform: "capitalize",
-                }}
-              >
-                {user?.role || "Employee"}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Navigation Menu */}
-        <nav style={{ flex: 1, overflowY: "auto" }}>
-          {menuItems.map((item) => (
-            <button
-              key={item.label}
-              onClick={() => {
-                setActiveMenu(item.path);
-                setSelectedBoardId(null);
-              }}
-              style={{
-                width: "100%",
-                padding: "12px 16px",
-                borderRadius: "10px",
-                marginBottom: "6px",
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                border: "none",
-                background:
-                  activeMenu === item.path
-                    ? "linear-gradient(135deg, #e74c8c 0%, #a855f7 100%)"
-                    : "transparent",
-                color:
-                  activeMenu === item.path
-                    ? "#fff"
-                    : darkMode
-                    ? "#94a3b8"
-                    : "#64748b",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                fontSize: "14px",
-                fontWeight: "500",
-                textAlign: "left",
-              }}
-              onMouseEnter={(e) => {
-                if (activeMenu !== item.path) {
-                  e.currentTarget.style.background = darkMode
-                    ? "rgba(59, 130, 246, 0.1)"
-                    : "rgba(219, 234, 254, 0.3)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (activeMenu !== item.path) {
-                  e.currentTarget.style.background = "transparent";
-                }
-              }}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </nav>
-
-        {/* Logout Button */}
-        <button
-          onClick={logout}
-          style={{
-            width: "100%",
-            padding: "12px 16px",
-            background: "transparent",
-            border: `1px solid ${
-              darkMode ? "rgba(239, 68, 68, 0.3)" : "rgba(239, 68, 68, 0.2)"
-            }`,
-            borderRadius: "10px",
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            color: "#ef4444",
-            fontSize: "14px",
-            fontWeight: "500",
-            cursor: "pointer",
-            transition: "all 0.3s ease",
-            marginTop: "16px",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "transparent";
-          }}
-        >
-          <LogOut size={20} />
-          <span>Logout</span>
-        </button>
-      </div>
+      {/* Sidebar Component */}
+      <DashboardSidebar
+        activeMenu={activeMenu}
+        onMenuChange={handleMenuChange}
+        onLogout={handleLogout}
+      />
 
       {/* Main Content Area */}
       <div
