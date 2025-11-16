@@ -11,10 +11,20 @@ import Footer from '../components/common/Footer';
 
 const LandingPage = () => {
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', minHeight: '100vh' }}>
       {/* Animated Background Gradient */}
-      <div className="animated-bg" />
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'radial-gradient(ellipse at 20% 20%, rgba(30, 64, 175, 0.3) 0%, transparent 50%), radial-gradient(ellipse at 80% 80%, rgba(59, 130, 246, 0.2) 0%, transparent 50%)',
+        zIndex: 0,
+        pointerEvents: 'none'
+      }} />
       
+      {/* Content */}
       <div style={{ position: 'relative', zIndex: 1 }}>
         <Navbar />
         <Hero />

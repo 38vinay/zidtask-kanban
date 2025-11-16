@@ -26,13 +26,13 @@ const Hero = () => {
           marginBottom: '20px',
           background: darkMode 
             ? 'linear-gradient(135deg, #fff 0%, #e74c8c 100%)'
-            : 'linear-gradient(135deg, #000 0%, #e74c8c 100%)',
+            : 'linear-gradient(135deg, #000 0%, #b794a3ff 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent'
         }}>
           Simplify Work.<br />
           Empower Teams.<br />
-          Track Tasks <span style={{ color: '#e74c8c' }}>Smarter.</span>
+          Track Tasks <span style={{ color: '#2d2baaff' }}>Smarter.</span>
         </h1>
         
         <p style={{
@@ -177,7 +177,7 @@ const Hero = () => {
                     overflow: 'hidden'
                   }}>
                     <div style={{
-                      background: 'linear-gradient(90deg, #e74c8c 0%, #a855f7 100%)',
+                      background: 'linear-gradient(90deg, #244f65ff 0%, #120f14ff 100%)',
                       width: '65%',
                       height: '100%'
                     }}></div>
@@ -193,7 +193,7 @@ const Hero = () => {
                   textAlign: 'center'
                 }}>
                   <div style={{ fontSize: '11px', color: darkMode ? '#999' : '#666' }}>Total Tasks</div>
-                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#e74c8c' }}>142</div>
+                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#32249aff' }}>142</div>
                 </div>
               </div>
             </div>
