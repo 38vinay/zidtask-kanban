@@ -24,11 +24,10 @@ const Hero = () => {
           fontWeight: '700',
           lineHeight: '1.2',
           marginBottom: '20px',
-          background: darkMode 
-            ? 'linear-gradient(135deg, #fff 0%, #e74c8c 100%)'
-            : 'linear-gradient(135deg, #000 0%, #b794a3ff 100%)',
+         
           WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
+        
+         
         }}>
           Simplify Work.<br />
           Empower Teams.<br />
