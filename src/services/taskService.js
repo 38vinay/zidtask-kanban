@@ -1,28 +1,23 @@
-import { localDB } from "./localDB";
-
-const KEY = "tasks";
-
-export const taskService = {
-  get() {
-    return localDB.get(KEY, []);
+export const teamService = {
+  getAll() {
+    return JSON.parse(localStorage.getItem("teamMembers") || "[]");
   },
 
-  add(task) {
-    const list = this.get();
-    list.push({ id: Date.now(), ...task });
-    localDB.set(KEY, list);
-    return list;
+  add(member) {
+    const list = this.getAll();
+    list.push({ id: Date.now(), ...member });
+    localStorage.setItem("teamMembers", JSON.stringify(list));
   },
 
-  update(id, data) {
-    const updated = this.get().map(t => (t.id === id ? { ...t, ...data } : t));
-    localDB.set(KEY, updated);
-    return updated;
+  update(id, updated) {
+    let list = this.getAll();
+    list = list.map((m) => (m.id === id ? { ...m, ...updated } : m));
+    localStorage.setItem("teamMembers", JSON.stringify(list));
   },
 
-  delete(id) {
-    const filtered = this.get().filter(t => t.id !== id);
-    localDB.set(KEY, filtered);
-    return filtered;
+  remove(id) {
+    let list = this.getAll();
+    list = list.filter((m) => m.id !== id);
+    localStorage.setItem("teamMembers", JSON.stringify(list));
   }
 };

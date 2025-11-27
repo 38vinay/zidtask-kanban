@@ -1,13 +1,17 @@
+// ===== FIXED LoginPage.jsx =====
+// src/pages/LoginPage.jsx
+
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
 
-const Login = () => {
+const LoginPage = () => {
   const { darkMode } = useTheme();
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   
   const [formData, setFormData] = useState({
     email: '',
@@ -42,6 +46,7 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
+    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -58,10 +63,9 @@ const Login = () => {
       
       // Simulate API call
       setTimeout(() => {
-        // ✅ FIX: Determine role based on email
-        let userRole = 'employee'; // Default role
+        // Determine role based on email
+        let userRole = 'employee';
         
-        // Role detection logic
         if (formData.email.includes('admin@') || formData.email === 'admin@company.com') {
           userRole = 'admin';
         } else if (formData.email.includes('manager@') || formData.email === 'manager@company.com') {
@@ -69,20 +73,25 @@ const Login = () => {
         }
         
         const userData = {
-          id: 1,
+          id: Date.now(),
           name: formData.email.split('@')[0],
           email: formData.email,
           role: userRole
         };
         
-        login(userData);
+        const result = login(userData);
         setIsLoading(false);
         
-        // ✅ FIX: Route based on role
-        if (userRole === 'admin' || userRole === 'manager') {
-          navigate('/dashboard/admin');
+        if (result.success) {
+          // Get the redirect path or use default based on role
+          const from = location.state?.from?.pathname;
+          const defaultPath = userRole === 'admin' || userRole === 'manager' 
+            ? '/dashboard/admin' 
+            : '/dashboard/user';
+          
+          navigate(from || defaultPath, { replace: true });
         } else {
-          navigate('/dashboard/user');
+          setErrors({ general: result.error || 'Login failed' });
         }
       }, 1500);
     }
@@ -97,30 +106,28 @@ const Login = () => {
       background: darkMode 
         ? 'radial-gradient(ellipse at top, rgba(231, 76, 140, 0.15) 0%, transparent 50%), #0a0f1e'
         : 'radial-gradient(ellipse at top, rgba(231, 76, 140, 0.1) 0%, transparent 50%), #ffffff',
-      padding: '20px',
-      position: 'relative'
+      padding: '20px'
     }}>
       <div style={{
         width: '100%',
-        maxWidth: '440px',
-        position: 'relative',
-        zIndex: 1
+        maxWidth: '440px'
       }}>
         {/* Logo & Header */}
-        <div className="text-center mb-4">
-          <Link to="/" className="d-inline-flex align-items-center gap-2 text-decoration-none mb-3">
-            <div className="pulse" style={{
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+          <Link to="/" style={{ display: 'inline-block', textDecoration: 'none' }}>
+            <div style={{
               width: '45px',
               height: '45px',
               background: 'linear-gradient(135deg, #e74c8c 0%, #a855f7 100%)',
               borderRadius: '10px',
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontWeight: 'bold',
               fontSize: '22px',
               color: '#fff',
-              boxShadow: '0 4px 12px rgba(231, 76, 140, 0.3)'
+              boxShadow: '0 4px 12px rgba(231, 76, 140, 0.3)',
+              marginBottom: '16px'
             }}>Z</div>
           </Link>
           <h2 style={{
@@ -136,7 +143,7 @@ const Login = () => {
         </div>
 
         {/* Login Card */}
-        <div className="scale-in" style={{
+        <div style={{
           background: darkMode 
             ? 'rgba(30, 64, 175, 0.1)' 
             : 'rgba(255, 255, 255, 0.9)',
@@ -162,10 +169,29 @@ const Login = () => {
             <div>🔴 Admin: <strong>admin@company.com</strong></div>
             <div>🟡 Manager: <strong>manager@company.com</strong></div>
             <div>🟢 Employee: <strong>any other email</strong></div>
+            <div style={{ marginTop: '6px' }}>Password: <strong>any (min 6 chars)</strong></div>
           </div>
 
+          {/* General Error */}
+          {errors.general && (
+            <div style={{
+              padding: '12px',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              borderRadius: '8px',
+              marginBottom: '20px',
+              color: '#ef4444',
+              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <AlertCircle size={16} />
+              {errors.general}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
-            {/* Rest of the form code remains the same... */}
             {/* Email Field */}
             <div style={{ marginBottom: '24px' }}>
               <label style={{
@@ -194,6 +220,7 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email"
+                  disabled={isLoading}
                   style={{
                     width: '100%',
                     padding: '12px 14px 12px 44px',
@@ -205,20 +232,13 @@ const Login = () => {
                     fontSize: '14px',
                     color: darkMode ? '#fff' : '#0f172a',
                     outline: 'none',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#3b82f6';
-                    e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = darkMode ? 'rgba(59, 130, 246, 0.3)' : 'rgba(30, 64, 175, 0.2)';
-                    e.target.style.boxShadow = 'none';
+                    transition: 'all 0.3s ease',
+                    opacity: isLoading ? 0.6 : 1
                   }}
                 />
               </div>
               {errors.email && (
-                <div className="fade-in" style={{
+                <div style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
@@ -260,6 +280,7 @@ const Login = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
+                  disabled={isLoading}
                   style={{
                     width: '100%',
                     padding: '12px 44px 12px 44px',
@@ -271,20 +292,14 @@ const Login = () => {
                     fontSize: '14px',
                     color: darkMode ? '#fff' : '#0f172a',
                     outline: 'none',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#3b82f6';
-                    e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = darkMode ? 'rgba(59, 130, 246, 0.3)' : 'rgba(30, 64, 175, 0.2)';
-                    e.target.style.boxShadow = 'none';
+                    transition: 'all 0.3s ease',
+                    opacity: isLoading ? 0.6 : 1
                   }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={isLoading}
                   style={{
                     position: 'absolute',
                     right: '14px',
@@ -292,18 +307,19 @@ const Login = () => {
                     transform: 'translateY(-50%)',
                     background: 'transparent',
                     border: 'none',
-                    cursor: 'pointer',
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
                     color: darkMode ? '#64748b' : '#94a3b8',
                     padding: '4px',
                     display: 'flex',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    opacity: isLoading ? 0.6 : 1
                   }}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
               {errors.password && (
-                <div className="fade-in" style={{
+                <div style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
@@ -354,11 +370,12 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="hover-lift"
               style={{
                 width: '100%',
                 padding: '14px',
-                background: 'linear-gradient(135deg, #e74c8c 0%, #a855f7 100%)',
+                background: isLoading 
+                  ? 'rgba(168, 85, 247, 0.5)'
+                  : 'linear-gradient(135deg, #e74c8c 0%, #a855f7 100%)',
                 border: 'none',
                 borderRadius: '10px',
                 color: '#fff',
@@ -367,9 +384,23 @@ const Login = () => {
                 cursor: isLoading ? 'not-allowed' : 'pointer',
                 boxShadow: '0 8px 20px rgba(231, 76, 140, 0.3)',
                 opacity: isLoading ? 0.7 : 1,
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
               }}
             >
+              {isLoading && (
+                <div style={{
+                  width: '16px',
+                  height: '16px',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                  borderTopColor: '#fff',
+                  borderRadius: '50%',
+                  animation: 'spin 0.8s linear infinite'
+                }} />
+              )}
               {isLoading ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
@@ -398,35 +429,33 @@ const Login = () => {
           </div>
 
           {/* Social Login */}
-          <div style={{ display: 'grid', gap: '12px' }}>
-            <button className="hover-scale transition-all" style={{
-              width: '100%',
-              padding: '12px',
-              background: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
-              border: `1px solid ${darkMode ? 'rgba(59, 130, 246, 0.3)' : 'rgba(30, 64, 175, 0.2)'}`,
-              borderRadius: '10px',
-              color: darkMode ? '#fff' : '#1e40af',
-              fontSize: '14px',
-              fontWeight: '500',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px'
-            }}>
-              <svg width="18" height="18" viewBox="0 0 18 18">
-                <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
-                <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
-                <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/>
-                <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
-              </svg>
-              Continue with Google
-            </button>
-          </div>
+          <button type="button" style={{
+            width: '100%',
+            padding: '12px',
+            background: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
+            border: `1px solid ${darkMode ? 'rgba(59, 130, 246, 0.3)' : 'rgba(30, 64, 175, 0.2)'}`,
+            borderRadius: '10px',
+            color: darkMode ? '#fff' : '#1e40af',
+            fontSize: '14px',
+            fontWeight: '500',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px'
+          }}>
+            <svg width="18" height="18" viewBox="0 0 18 18">
+              <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+              <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+              <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/>
+              <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/>
+            </svg>
+            Continue with Google
+          </button>
         </div>
 
         {/* Sign Up Link */}
-        <div className="text-center mt-4">
+        <div style={{ textAlign: 'center', marginTop: '24px' }}>
           <p style={{
             color: darkMode ? '#94a3b8' : '#64748b',
             fontSize: '14px'
@@ -442,8 +471,15 @@ const Login = () => {
           </p>
         </div>
       </div>
+
+      <style>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };
 
-export default Login;
+export default LoginPage;
