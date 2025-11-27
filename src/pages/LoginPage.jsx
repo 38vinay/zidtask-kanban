@@ -42,7 +42,6 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -59,16 +58,32 @@ const Login = () => {
       
       // Simulate API call
       setTimeout(() => {
+        // ✅ FIX: Determine role based on email
+        let userRole = 'employee'; // Default role
+        
+        // Role detection logic
+        if (formData.email.includes('admin@') || formData.email === 'admin@company.com') {
+          userRole = 'admin';
+        } else if (formData.email.includes('manager@') || formData.email === 'manager@company.com') {
+          userRole = 'manager';
+        }
+        
         const userData = {
           id: 1,
-          name: 'John Doe',
+          name: formData.email.split('@')[0],
           email: formData.email,
-          role: 'employee'
+          role: userRole
         };
         
         login(userData);
         setIsLoading(false);
-        navigate('/dashboard/user');
+        
+        // ✅ FIX: Route based on role
+        if (userRole === 'admin' || userRole === 'manager') {
+          navigate('/dashboard/admin');
+        } else {
+          navigate('/dashboard/user');
+        }
       }, 1500);
     }
   };
@@ -85,29 +100,7 @@ const Login = () => {
       padding: '20px',
       position: 'relative'
     }}>
-      {/* Animated Background Elements */}
       <div style={{
-        position: 'absolute',
-        top: '10%',
-        left: '10%',
-        width: '300px',
-        height: '300px',
-        background: 'radial-gradient(circle, rgba(30, 64, 175, 0.1) 0%, transparent 70%)',
-        borderRadius: '50%',
-        animation: 'float 6s ease-in-out infinite'
-      }} />
-      <div style={{
-        position: 'absolute',
-        bottom: '10%',
-        right: '10%',
-        width: '400px',
-        height: '400px',
-        background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%)',
-        borderRadius: '50%',
-        animation: 'float 8s ease-in-out infinite'
-      }} />
-
-      <div className="fade-in" style={{
         width: '100%',
         maxWidth: '440px',
         position: 'relative',
@@ -155,7 +148,24 @@ const Login = () => {
             ? '0 20px 60px rgba(0, 0, 0, 0.3)' 
             : '0 20px 60px rgba(0, 0, 0, 0.1)'
         }}>
+          {/* Demo Credentials Info */}
+          <div style={{
+            padding: '12px',
+            background: 'rgba(59, 130, 246, 0.1)',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            fontSize: '12px',
+            color: darkMode ? '#94a3b8' : '#64748b',
+            lineHeight: '1.6'
+          }}>
+            <strong style={{ color: '#3b82f6', display: 'block', marginBottom: '6px' }}>Demo Credentials:</strong>
+            <div>🔴 Admin: <strong>admin@company.com</strong></div>
+            <div>🟡 Manager: <strong>manager@company.com</strong></div>
+            <div>🟢 Employee: <strong>any other email</strong></div>
+          </div>
+
           <form onSubmit={handleSubmit}>
+            {/* Rest of the form code remains the same... */}
             {/* Email Field */}
             <div style={{ marginBottom: '24px' }}>
               <label style={{
