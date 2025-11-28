@@ -5,17 +5,17 @@ export const notificationService = {
 
   add(notification) {
     const list = this.getAll();
+
     const newNote = {
       id: Date.now(),
       ...notification,
       read: false,
-      time: new Date().toLocaleString(),
+      time: new Date().toLocaleString()
     };
 
     list.unshift(newNote);
     localStorage.setItem("notifications", JSON.stringify(list));
 
-    // Let Sidebar auto update
     window.dispatchEvent(new Event("notificationUpdate"));
   },
 

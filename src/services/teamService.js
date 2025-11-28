@@ -1,22 +1,31 @@
-import { localDB } from "./localDB";
+// src/services/teamService.js
 
-const KEY = "teamMembers";
+const TEAM_KEY = "teamMembersDB";
 
 export const teamService = {
-  get() {
-    return localDB.get(KEY, []);
+  getAll() {
+    return JSON.parse(localStorage.getItem(TEAM_KEY) || "[]");
   },
 
-  add(name) {
-    const list = this.get();
-    list.push({ id: Date.now(), name });
-    localDB.set(KEY, list);
-    return list;
+  saveAll(members) {
+    localStorage.setItem(TEAM_KEY, JSON.stringify(members));
   },
 
-  remove(id) {
-    const list = this.get().filter(m => m.id !== id);
-    localDB.set(KEY, list);
-    return list;
+  add(member) {
+    const list = this.getAll();
+    list.push(member);
+    this.saveAll(list);
+  },
+
+  update(memberId, updatedData) {
+    const list = this.getAll().map(m =>
+      m.id === memberId ? { ...m, ...updatedData } : m
+    );
+    this.saveAll(list);
+  },
+
+  remove(memberId) {
+    const list = this.getAll().filter(m => m.id !== memberId);
+    this.saveAll(list);
   }
 };
