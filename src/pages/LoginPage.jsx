@@ -98,6 +98,7 @@ const LoginPage = () => {
   };
 
   return (
+    
     <div style={{
       minHeight: '100vh',
       display: 'flex',
@@ -478,6 +479,8 @@ const LoginPage = () => {
           to { transform: rotate(360deg); }
         }
       `}</style>
+
+      
     </div>
   );
 };

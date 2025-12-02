@@ -61,12 +61,12 @@ const Navbar = () => {
               fontSize: '14px',
               fontWeight: '500'
             }}>Features</a>
-            <a href="#pricing" style={{ 
+            <a href="#how-to-use" style={{ 
               color: darkMode ? '#aaa' : '#666', 
               textDecoration: 'none', 
               fontSize: '14px',
               fontWeight: '500'
-            }}>Pricing</a>
+            }}>How To Use</a>
             <a href="#faq" style={{ 
               color: darkMode ? '#aaa' : '#666', 
               textDecoration: 'none', 
