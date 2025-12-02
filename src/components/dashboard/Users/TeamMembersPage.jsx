@@ -2,7 +2,7 @@
 
 import React from "react";
 import { boardService } from "../../../services/localDB";
-import TeamMembers from "../Admin/AdminTeamMembers";
+import TeamMembers from "../Users/TeamMembers";
 import { useTheme } from "../../../contexts/ThemeContext";
 
 export default function TeamMembersPage({ isRestricted = false }) {
