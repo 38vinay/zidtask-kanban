@@ -13,7 +13,8 @@ const Column = ({
   onAddTask,
   onDeleteColumn,
   onEditColumn,
-  onTaskClick
+  onTaskClick,
+  isRestricted = false
 }) => {
   const { darkMode } = useTheme();
   const [showMenu, setShowMenu] = useState(false);
@@ -37,11 +38,10 @@ const Column = ({
                 ? 'rgba(30, 64, 175, 0.05)'
                 : 'rgba(248, 250, 252, 0.8)',
               borderRadius: '12px',
-              border: `1px solid ${
-                darkMode
-                  ? 'rgba(59, 130, 246, 0.2)'
-                  : 'rgba(30, 64, 175, 0.1)'
-              }`,
+              border: `1px solid ${darkMode
+                ? 'rgba(59, 130, 246, 0.2)'
+                : 'rgba(30, 64, 175, 0.1)'
+                }`,
               maxHeight: 'calc(100vh - 200px)',
               ...provided.draggableProps.style
             }}
@@ -54,11 +54,10 @@ const Column = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                borderBottom: `1px solid ${
-                  darkMode
-                    ? 'rgba(59, 130, 246, 0.1)'
-                    : 'rgba(30, 64, 175, 0.05)'
-                }`,
+                borderBottom: `1px solid ${darkMode
+                  ? 'rgba(59, 130, 246, 0.1)'
+                  : 'rgba(30, 64, 175, 0.05)'
+                  }`,
                 cursor: 'grab'
               }}
             >
@@ -99,21 +98,23 @@ const Column = ({
               </div>
 
               <div style={{ position: 'relative' }}>
-                <button
-                  onClick={() => setShowMenu(!showMenu)}
-                  style={{
-                    background: 'transparent',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: '4px',
-                    borderRadius: '4px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    color: darkMode ? '#94a3b8' : '#64748b'
-                  }}
-                >
-                  <MoreVertical size={16} />
-                </button>
+                {!isRestricted && (
+                  <button
+                    onClick={() => setShowMenu(!showMenu)}
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '4px',
+                      borderRadius: '4px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: darkMode ? '#94a3b8' : '#64748b'
+                    }}
+                  >
+                    <MoreVertical size={16} />
+                  </button>
+                )}
 
                 {showMenu && (
                   <>
@@ -133,11 +134,10 @@ const Column = ({
                         right: 0,
                         marginTop: '4px',
                         background: darkMode ? '#1e293b' : '#fff',
-                        border: `1px solid ${
-                          darkMode
-                            ? 'rgba(59, 130, 246, 0.2)'
-                            : 'rgba(0, 0, 0, 0.1)'
-                        }`,
+                        border: `1px solid ${darkMode
+                          ? 'rgba(59, 130, 246, 0.2)'
+                          : 'rgba(0, 0, 0, 0.1)'
+                          }`,
                         borderRadius: '8px',
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
                         zIndex: 20,
@@ -244,34 +244,35 @@ const Column = ({
             </Droppable>
 
             {/* Add Task Button */}
-            <div style={{ padding: '12px' }}>
-              <button
-                onClick={() => setShowCreateModal(true)}
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  background: 'transparent',
-                  border: `1px dashed ${
-                    darkMode
+            {!isRestricted && (
+              <div style={{ padding: '12px' }}>
+                <button
+                  onClick={() => setShowCreateModal(true)}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    background: 'transparent',
+                    border: `1px dashed ${darkMode
                       ? 'rgba(59, 130, 246, 0.3)'
                       : 'rgba(30, 64, 175, 0.2)'
-                  }`,
-                  borderRadius: '8px',
-                  color: darkMode ? '#60a5fa' : '#3b82f6',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                <Plus size={16} />
-                Add Task
-              </button>
-            </div>
+                      }`,
+                    borderRadius: '8px',
+                    color: darkMode ? '#60a5fa' : '#3b82f6',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  <Plus size={16} />
+                  Add Task
+                </button>
+              </div>
+            )}
           </div>
         )}
       </Draggable>

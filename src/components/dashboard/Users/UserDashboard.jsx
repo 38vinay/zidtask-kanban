@@ -13,7 +13,7 @@ import TaskOverview from './TaskOverview.jsx';
 import TeamMembers from './TeamMembers';
 import QuickActions from './QuickActions';
 
-const UserDashboard = () => {
+const UserDashboard = ({ isRestricted = false }) => {
   const { darkMode } = useTheme();
   const { user } = useAuth();
   const [boards, setBoards] = useState([]);
@@ -48,8 +48,8 @@ const UserDashboard = () => {
         // Count by status
         if (column.name.toLowerCase().includes('progress')) {
           inProgress += tasks.length;
-        } else if (column.name.toLowerCase().includes('done') || 
-                   column.name.toLowerCase().includes('complete')) {
+        } else if (column.name.toLowerCase().includes('done') ||
+          column.name.toLowerCase().includes('complete')) {
           completed += tasks.length;
         }
 
@@ -82,10 +82,11 @@ const UserDashboard = () => {
       padding: '32px'
     }}>
       {/* Dashboard Header */}
-      <DashboardHeader 
+      <DashboardHeader
         user={user}
         onCreateTask={handleCreateTask}
         onAssignTask={handleAssignTask}
+        isRestricted={isRestricted}
       />
 
       {/* Stats Cards */}
@@ -109,13 +110,15 @@ const UserDashboard = () => {
       </div>
 
       {/* Team Members Section */}
-      <TeamMembers boards={boards} />
+      <TeamMembers boards={boards} isRestricted={isRestricted} />
 
       {/* Quick Actions (Floating) */}
-      <QuickActions 
-        onCreateTask={handleCreateTask}
-        onCreateBoard={() => console.log('Create board')}
-      />
+      {!isRestricted && (
+        <QuickActions
+          onCreateTask={handleCreateTask}
+          onCreateBoard={() => console.log('Create board')}
+        />
+      )}
     </div>
   );
 };

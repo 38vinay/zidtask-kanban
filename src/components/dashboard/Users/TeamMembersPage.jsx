@@ -2,10 +2,10 @@
 
 import React from "react";
 import { boardService } from "../../../services/localDB";
-import TeamMembers from "../user/TeamMembers";
+import TeamMembers from "../Admin/AdminTeamMembers";
 import { useTheme } from "../../../contexts/ThemeContext";
 
-export default function TeamMembersPage() {
+export default function TeamMembersPage({ isRestricted = false }) {
   const { darkMode } = useTheme();
 
   const boards = boardService.getAll();
@@ -24,7 +24,7 @@ export default function TeamMembersPage() {
         Manage your team and assign members to boards.
       </p>
 
-      <TeamMembers boards={boards} />
+      <TeamMembers boards={boards} isRestricted={isRestricted} />
     </div>
   );
 }

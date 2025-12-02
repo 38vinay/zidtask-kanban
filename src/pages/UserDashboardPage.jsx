@@ -4,15 +4,15 @@ import { useTheme } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
 
 // Import Components
-import DashboardSidebar from "../components/dashboard/user/DashboardSidebar";
-import UserDashboard from "../components/dashboard/user/UserDashboard";
+import DashboardSidebar from "../components/dashboard/Users/DashboardSidebar";
+import UserDashboard from "../components/dashboard/Users/UserDashboard";
 import BoardList from "../components/board/BoardList";
 import Board from "../components/board/Board";
-import NotificationsPage from "../components/dashboard/user/NotificationsPage";
+import NotificationsPage from "../components/dashboard/Users/NotificationsPage";
 
-import SettingsPage from "../components/dashboard/user/SettingsPage";
-import AnalyticsPage from "../components/dashboard/user/AnalyticsPage";
-import TeamMembersPage from "../components/dashboard/user/TeamMembersPage";
+import SettingsPage from "../components/dashboard/Users/SettingsPage";
+import AnalyticsPage from "../components/dashboard/Users/AnalyticsPage";
+import TeamMembersPage from "../components/dashboard/Users/TeamMembersPage";
 
 const UserDashboardPage = () => {
   const { darkMode } = useTheme();
@@ -39,7 +39,7 @@ const UserDashboardPage = () => {
   const renderPage = () => {
     switch (activeMenu) {
       case "Home":
-        return <UserDashboard />;
+        return <UserDashboard isRestricted={true} />;
 
       case "Tasks":
         if (selectedBoardId) {
@@ -47,6 +47,7 @@ const UserDashboardPage = () => {
             <Board
               boardId={selectedBoardId}
               onBack={() => setSelectedBoardId(null)}
+              isRestricted={true}
             />
           );
         }
@@ -57,7 +58,7 @@ const UserDashboardPage = () => {
         );
 
       case "Team":
-        return <TeamMembersPage />;
+        return <TeamMembersPage isRestricted={true} />;
 
       case "Notifications":
         return <NotificationsPage />;
@@ -69,7 +70,7 @@ const UserDashboardPage = () => {
         return <SettingsPage />;
 
       default:
-        return <UserDashboard />;
+        return <UserDashboard isRestricted={true} />;
     }
   };
 

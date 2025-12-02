@@ -4,16 +4,16 @@ import { useTheme } from "../contexts/ThemeContext";
 import { useAuth } from "../contexts/AuthContext";
 
 // Import Components
-import DashboardSidebar from "../components/dashboard/user/DashboardSidebar";
-import UserDashboard from "../components/dashboard/user/UserDashboard";
+import DashboardSidebar from "../components/dashboard/Admin/AdminDashboardSidebar";
+import UserDashboard from "../components/dashboard/Admin/AdminDashboard";
 import BoardList from "../components/board/BoardList";
 import Board from "../components/board/Board";
 
-import NotificationsPage from "../components/dashboard/user/NotificationsPage";
+import NotificationsPage from "../components/dashboard/Admin/AdminNotificationsPage";
 
-import SettingsPage from "../components/dashboard/user/SettingsPage";
-import AnalyticsPage from "../components/dashboard/user/AnalyticsPage";
-import TeamMembersPage from "../components/dashboard/user/TeamMembersPage";
+import SettingsPage from "../components/dashboard/Admin/AdminSettingsPage";
+import AnalyticsPage from "../components/dashboard/Admin/AdminAnalyticsPage";
+import TeamMembersPage from "../components/dashboard/Admin/AdminTeamMembersPage";
 
 const AdminDashboardPage = () => {
   const { darkMode } = useTheme();

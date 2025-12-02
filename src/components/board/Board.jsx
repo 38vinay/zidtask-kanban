@@ -10,7 +10,7 @@ import Column from '../column/Column';
 import CardModal from '../card/CardModal';
 import CreateColumn from '../column/CreateColumn';
 
-const Board = ({ boardId, onBack }) => {
+const Board = ({ boardId, onBack, isRestricted = false }) => {
   const { darkMode } = useTheme();
   const { user } = useAuth();
   const { success, error: showError } = useToast();
@@ -315,11 +315,11 @@ const Board = ({ boardId, onBack }) => {
       {/* Board Header */}
       <div style={{
         padding: '20px 32px',
-        background: darkMode 
-          ? 'rgba(30, 64, 175, 0.05)' 
+        background: darkMode
+          ? 'rgba(30, 64, 175, 0.05)'
           : 'rgba(255, 255, 255, 0.8)',
-        borderBottom: `1px solid ${darkMode 
-          ? 'rgba(59, 130, 246, 0.2)' 
+        borderBottom: `1px solid ${darkMode
+          ? 'rgba(59, 130, 246, 0.2)'
           : 'rgba(30, 64, 175, 0.1)'}`,
         backdropFilter: 'blur(10px)',
         position: 'sticky',
@@ -343,8 +343,8 @@ const Board = ({ boardId, onBack }) => {
               onClick={onBack}
               style={{
                 padding: '8px',
-                background: darkMode 
-                  ? 'rgba(255, 255, 255, 0.05)' 
+                background: darkMode
+                  ? 'rgba(255, 255, 255, 0.05)'
                   : 'rgba(0, 0, 0, 0.05)',
                 border: 'none',
                 borderRadius: '8px',
@@ -386,8 +386,8 @@ const Board = ({ boardId, onBack }) => {
           }}>
             {/* Search */}
             <div style={{ position: 'relative' }}>
-              <Search 
-                size={18} 
+              <Search
+                size={18}
                 style={{
                   position: 'absolute',
                   left: '12px',
@@ -403,11 +403,11 @@ const Board = ({ boardId, onBack }) => {
                 placeholder="Search tasks..."
                 style={{
                   padding: '8px 12px 8px 38px',
-                  background: darkMode 
-                    ? 'rgba(255, 255, 255, 0.05)' 
+                  background: darkMode
+                    ? 'rgba(255, 255, 255, 0.05)'
                     : 'rgba(0, 0, 0, 0.05)',
-                  border: `1px solid ${darkMode 
-                    ? 'rgba(59, 130, 246, 0.3)' 
+                  border: `1px solid ${darkMode
+                    ? 'rgba(59, 130, 246, 0.3)'
                     : 'rgba(30, 64, 175, 0.2)'}`,
                   borderRadius: '8px',
                   color: darkMode ? '#fff' : '#1e293b',
@@ -422,8 +422,8 @@ const Board = ({ boardId, onBack }) => {
             <button
               style={{
                 padding: '8px 12px',
-                background: darkMode 
-                  ? 'rgba(255, 255, 255, 0.05)' 
+                background: darkMode
+                  ? 'rgba(255, 255, 255, 0.05)'
                   : 'rgba(0, 0, 0, 0.05)',
                 border: 'none',
                 borderRadius: '8px',
@@ -442,8 +442,8 @@ const Board = ({ boardId, onBack }) => {
             <button
               style={{
                 padding: '8px 12px',
-                background: darkMode 
-                  ? 'rgba(255, 255, 255, 0.05)' 
+                background: darkMode
+                  ? 'rgba(255, 255, 255, 0.05)'
                   : 'rgba(0, 0, 0, 0.05)',
                 border: 'none',
                 borderRadius: '8px',
@@ -492,64 +492,67 @@ const Board = ({ boardId, onBack }) => {
                     onDeleteColumn={handleDeleteColumn}
                     onEditColumn={handleEditColumn}
                     onTaskClick={handleTaskClick}
+                    isRestricted={isRestricted}
                   />
                 ))}
 
                 {provided.placeholder}
 
                 {/* Add Column Button */}
-                <div style={{
-                  width: '320px',
-                  minWidth: '320px'
-                }}>
-                  {showCreateColumn ? (
-                    <CreateColumn
-                      onSubmit={handleAddColumn}
-                      onCancel={() => setShowCreateColumn(false)}
-                    />
-                  ) : (
-                    <button
-                      onClick={() => setShowCreateColumn(true)}
-                      style={{
-                        width: '100%',
-                        padding: '16px',
-                        background: darkMode 
-                          ? 'rgba(255, 255, 255, 0.03)' 
-                          : 'rgba(0, 0, 0, 0.02)',
-                        border: `2px dashed ${darkMode 
-                          ? 'rgba(59, 130, 246, 0.3)' 
-                          : 'rgba(30, 64, 175, 0.2)'}`,
-                        borderRadius: '12px',
-                        color: darkMode ? '#60a5fa' : '#3b82f6',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = darkMode 
-                          ? 'rgba(59, 130, 246, 0.1)' 
-                          : 'rgba(219, 234, 254, 0.3)';
-                        e.currentTarget.style.borderColor = '#3b82f6';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = darkMode 
-                          ? 'rgba(255, 255, 255, 0.03)' 
-                          : 'rgba(0, 0, 0, 0.02)';
-                        e.currentTarget.style.borderColor = darkMode 
-                          ? 'rgba(59, 130, 246, 0.3)' 
-                          : 'rgba(30, 64, 175, 0.2)';
-                      }}
-                    >
-                      <Plus size={18} />
-                      Add Column
-                    </button>
-                  )}
-                </div>
+                {!isRestricted && (
+                  <div style={{
+                    width: '320px',
+                    minWidth: '320px'
+                  }}>
+                    {showCreateColumn ? (
+                      <CreateColumn
+                        onSubmit={handleAddColumn}
+                        onCancel={() => setShowCreateColumn(false)}
+                      />
+                    ) : (
+                      <button
+                        onClick={() => setShowCreateColumn(true)}
+                        style={{
+                          width: '100%',
+                          padding: '16px',
+                          background: darkMode
+                            ? 'rgba(255, 255, 255, 0.03)'
+                            : 'rgba(0, 0, 0, 0.02)',
+                          border: `2px dashed ${darkMode
+                            ? 'rgba(59, 130, 246, 0.3)'
+                            : 'rgba(30, 64, 175, 0.2)'}`,
+                          borderRadius: '12px',
+                          color: darkMode ? '#60a5fa' : '#3b82f6',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = darkMode
+                            ? 'rgba(59, 130, 246, 0.1)'
+                            : 'rgba(219, 234, 254, 0.3)';
+                          e.currentTarget.style.borderColor = '#3b82f6';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = darkMode
+                            ? 'rgba(255, 255, 255, 0.03)'
+                            : 'rgba(0, 0, 0, 0.02)';
+                          e.currentTarget.style.borderColor = darkMode
+                            ? 'rgba(59, 130, 246, 0.3)'
+                            : 'rgba(30, 64, 175, 0.2)';
+                        }}
+                      >
+                        <Plus size={18} />
+                        Add Column
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </Droppable>
